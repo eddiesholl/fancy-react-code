@@ -1,10 +1,10 @@
 {
-    "name": "code-fancy-react",
+    "name": "fancy-react-code",
     "displayName": "fancy-react",
     "description": "Development tools and code generation for react development",
     "version": "0.0.1",
     "publisher": "fancy-react",
-    "repository": "https://github.com/eddiesholl/code-fancy-react",
+    "repository": "https://github.com/eddiesholl/fancy-react-code",
     "engines": {
         "vscode": "^1.21.0"
     },
@@ -12,14 +12,29 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.generate",
+        "onCommand:extension.tests",
+        "onCommand:extension.switch",
+        "onLanguage:javascript",
+        "onLanguage:javascriptreact",
+        "onLanguage:typescript",
+        "onLanguage:typescriptreact",
+        "onLanguage:jsx-tags"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "extension.generate",
+                "title": "Generate a react component from the current JSX snippet"
+            },
+            {
+                "command": "extension.tests",
+                "title": "Generate tests for the exports from the current javascript source file"
+            },
+            {
+                "command": "extension.switch",
+                "title": "Jump back and forth between a source file and the relevant test file"
             }
         ]
     },
