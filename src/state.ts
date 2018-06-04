@@ -1,16 +1,14 @@
-export interface State {
-  ide: IDE;
-}
+import { IState } from 'fancy-react-core';
 
 import { CodeIDE } from './core/ide';
 
-export class CodeState implements State {
+export class CodeState implements IState {
   ide: CodeIDE;
   constructor() {
     this.ide = new CodeIDE();
   }
 }
 
-export function getState() : State {
+export function getState() : IState {
   return new CodeState();
 }
