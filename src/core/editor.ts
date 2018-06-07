@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IEditor, IPosition } from 'fancy-react-core';
+import { IEditor, Position } from 'fancy-react-core';
 
 export default class CodeEditor implements IEditor {
   editorInstance: vscode.TextEditor;
@@ -12,11 +12,11 @@ export default class CodeEditor implements IEditor {
   getCursorPosition() {
     return this.editorInstance.selection.active;
   }
-  insertText(position: IPosition, text: string) {
+  insertText(position: Position, text: string) {
     const codePosition = new vscode.Position(position.line, position.character);
     return new Promise<boolean>((resolve, reject) => {
       this.editorInstance.edit((edit: vscode.TextEditorEdit) => {
-        edit.insert(codePosition, text);
+        edit.insert(codePosition, text + '\n');
       })
       .then((result: boolean) => resolve(result));
       // .catch((error) => reject(false));
