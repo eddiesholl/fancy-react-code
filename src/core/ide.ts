@@ -4,7 +4,6 @@ import { IEditor, IIDE } from 'fancy-react-core';
 import CodeEditor from './editor';
 
 export class CodeIDE implements IIDE {
-  constructor() {}
   log(msg: string) {
     vscode.window.showInformationMessage(msg);
   }

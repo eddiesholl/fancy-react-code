@@ -24,7 +24,7 @@ export default class CodeEditor implements IEditor {
   }
   setText(text: string) {
     const lineCount = this.editorInstance.document.lineCount;
-    const lastLine = this.editorInstance.document.lineAt(lineCount);
+    const lastLine = this.editorInstance.document.lineAt(lineCount - 1);
     this.editorInstance.edit((edit: vscode.TextEditorEdit) => {
       const range = new vscode.Range(
         new vscode.Position(0, 0),
