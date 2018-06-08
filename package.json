@@ -2,7 +2,7 @@
     "name": "fancy-react-code",
     "displayName": "fancy-react",
     "description": "Development tools and code generation for react development",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "fancy-react",
     "repository": "https://github.com/eddiesholl/fancy-react-code",
     "engines": {
@@ -21,7 +21,8 @@
         "onLanguage:typescriptreact",
         "onLanguage:jsx-tags"
     ],
-    "main": "./out/extension",
+    "main": "./dist/extension",
+    "files": ["dist"],
     "contributes": {
         "commands": [
             {
