@@ -9,6 +9,7 @@
         "vscode": "^1.21.0"
     },
     "categories": [
+        "Programming Languages",
         "Other"
     ],
     "activationEvents": [
@@ -37,7 +38,12 @@
                 "command": "extension.switch",
                 "title": "Jump back and forth between a source file and the relevant test file"
             }
-        ]
+        ],
+        "keybindings": [{
+            "command": "extension.generate",
+            "key": "ctrl+alt+g",
+            "when": "editorTextFocus"
+        }]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
