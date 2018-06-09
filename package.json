@@ -23,7 +23,9 @@
         "onLanguage:jsx-tags"
     ],
     "main": "./dist/extension",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "contributes": {
         "commands": [
             {
@@ -39,11 +41,13 @@
                 "title": "Jump back and forth between a source file and the relevant test file"
             }
         ],
-        "keybindings": [{
-            "command": "extension.generate",
-            "key": "ctrl+alt+g",
-            "when": "editorTextFocus"
-        }]
+        "keybindings": [
+            {
+                "command": "extension.generate",
+                "key": "ctrl+alt+g",
+                "when": "editorTextFocus"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -53,7 +57,7 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "dependencies": {
-        "fancy-react-core": "^1.0.0",
+        "fancy-react-core": "^1.0.1",
         "ramda": "^0.25.0"
     },
     "devDependencies": {
