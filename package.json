@@ -1,7 +1,8 @@
 {
     "name": "fancy-react-code",
-    "displayName": "fancy-react",
+    "displayName": "Fancy React",
     "description": "Development tools and code generation for react development",
+    "icon": "https://github.com/eddiesholl/fancy-react-code/raw/master/doc/F-R.png",
     "version": "1.0.1",
     "publisher": "fancy-react",
     "repository": "https://github.com/eddiesholl/fancy-react-code",

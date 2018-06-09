@@ -12,7 +12,7 @@ Start from a snippet of a proposed React component in some jsx somewhere, and ge
 
 Default key binding: `ctrl-alt-g`
 
-![generate](https://github.com/eddiesholl/atom-fancy-react/raw/master/doc/generate-component.gif "generate")
+![generate](https://github.com/eddiesholl/fancy-react-code/raw/master/doc/generate-component.gif "generate")
 
 ## `tests`
 
@@ -22,7 +22,7 @@ Start from a source code file containing exported functions and classes, and gen
 
 Default key binding: `ctrl-alt-t`
 
-![tests](https://github.com/eddiesholl/atom-fancy-react/raw/master/doc/generate-tests.gif "tests")
+![tests](https://github.com/eddiesholl/fancy-react-code/raw/master/doc/generate-tests.gif "tests")
 
 ## `switch`
 
@@ -89,6 +89,10 @@ Specifically, this is how it works:
  - if so, spin up an `eslint` instance using http://eslint.org/docs/developer-guide/nodejs-api#cliengine
  - this will be able to respect all of the `.eslintrc` files that may exist in your project
  - the generated code is passed through in `fix` mode. This means that rules can only be respected if they implement a fix
+
+# History
+
+This extension for VSCode has been ported from an atom plugin with the same goals, which is available [here](https://github.com/eddiesholl/atom-fancy-react). The bulk of the parsing code has been extracted to a dedicated platform agnostic library https://github.com/eddiesholl/fancy-react-core/ At some point, the atom version could be migrated to consume this new code base, but for now it is not under development.
 
 # Troubleshooting
 
