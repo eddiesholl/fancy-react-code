@@ -1,4 +1,4 @@
-import { baz, FileSystem, Formatter, IFileSystem, IState, Project } from 'fancy-react-core';
+import { FileSystem, Formatter, IFileSystem, IState, Project } from 'fancy-react-core';
 
 import { CodeIDE } from './core/ide';
 import { loadConfigItems } from './core/project';

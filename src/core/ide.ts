@@ -10,8 +10,10 @@ export class CodeIDE implements IIDE {
 
   open(filePath: string) {
     return new Promise<IEditor>((resolve) => {
-      vscode.workspace.openTextDocument(filePath).then(() => {
-        resolve(this.getEditor());
+      vscode.workspace.openTextDocument(filePath).then(document => {
+        return vscode.window.showTextDocument(document);
+      }).then(editor => {
+        resolve(new CodeEditor(editor));
       });
     });
   }
