@@ -1,4 +1,4 @@
-# code-fancy-react
+# fancy-react-code
 
 An extension for `Visual Studio Code` that helps to automate building react apps, following your preferred project layout.
 
