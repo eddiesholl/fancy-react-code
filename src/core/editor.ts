@@ -6,12 +6,15 @@ export default class CodeEditor implements IEditor {
   constructor(editorInstance: vscode.TextEditor) {
     this.editorInstance = editorInstance;
   }
+
   getText() {
     return this.editorInstance.document.getText();
   }
+
   getCursorPosition() {
     return this.editorInstance.selection.active;
   }
+
   insertText(position: Position, text: string) {
     const codePosition = new vscode.Position(position.line, position.character);
     return new Promise<boolean>((resolve, reject) => {
@@ -22,6 +25,7 @@ export default class CodeEditor implements IEditor {
       // .catch((error) => reject(false));
     });
   }
+
   setText(text: string) {
     const lineCount = this.editorInstance.document.lineCount;
     const lastLine = this.editorInstance.document.lineAt(lineCount - 1);
@@ -32,5 +36,9 @@ export default class CodeEditor implements IEditor {
       );
       edit.replace(range, text);
     });
+  }
+
+  getFilePath() {
+    return this.editorInstance.document.fileName;
   }
 }

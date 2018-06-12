@@ -47,6 +47,11 @@
                 "command": "extension.generate",
                 "key": "ctrl+alt+g",
                 "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.tests",
+                "key": "ctrl+alt+t",
+                "when": "editorTextFocus"
             }
         ]
     },
@@ -54,6 +59,8 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
+        "lint": "tslint -p ./",
+        "lint:fix": "tslint -p ./ --fix",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "echo 'TODO write some tests'"
     },
