@@ -16,8 +16,6 @@ Default key binding: `ctrl-alt-g`
 
 ## `tests`
 
-TODO: Not yet available, it still needs to be ported from `atom-fancy-react`
-
 Start from a source code file containing exported functions and classes, and generate a test file with suites for each export. If the test file doesn't exist, then create it using a sensible path and naming structure. If the file does already exist, then merge any existing tests and suites with the ones that have been generated for you.
 
 Default key binding: `ctrl-alt-t`
