@@ -56,11 +56,13 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
+        "vscode:prepublish": "npm run lint && npm run test && npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "lint": "tslint -p ./",
         "lint:fix": "tslint -p ./ --fix",
+        "release": "vsce publish",
+        "release:npm": "np --no-yarn",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "echo 'TODO write some tests'"
     },
