@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 
 import { getState } from './state';
-import { generate, tests } from './actions';
+import { generate, tests, switchFiles } from './actions';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -22,9 +22,13 @@ export function activate(context: vscode.ExtensionContext) {
     const testsDisposable = vscode.commands.registerCommand('extension.tests', () => {
         tests(state);
     });
+    const switchDisposable = vscode.commands.registerCommand('extension.switchFiles', () => {
+        switchFiles(state);
+    });
 
     context.subscriptions.push(generateDisposable);
     context.subscriptions.push(testsDisposable);
+    context.subscriptions.push(switchDisposable);
 }
 
 // this method is called when your extension is deactivated

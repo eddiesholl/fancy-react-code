@@ -38,7 +38,7 @@
                 "title": "Generate tests for the exports from the current javascript source file"
             },
             {
-                "command": "extension.switch",
+                "command": "extension.switchFiles",
                 "title": "Jump back and forth between a source file and the relevant test file"
             }
         ],
@@ -51,6 +51,11 @@
             {
                 "command": "extension.tests",
                 "key": "ctrl+alt+t",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.switchFiles",
+                "key": "ctrl+alt+s",
                 "when": "editorTextFocus"
             }
         ]
@@ -68,7 +73,7 @@
     },
     "dependencies": {
         "@types/ramda": "^0.25.32",
-        "fancy-react-core": "^2.0.0",
+        "fancy-react-core": "^2.1.0",
         "ramda": "^0.25.0"
     },
     "devDependencies": {

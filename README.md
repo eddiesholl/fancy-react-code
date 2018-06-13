@@ -24,8 +24,6 @@ Default key binding: `ctrl-alt-t`
 
 ## `switch`
 
-TODO: Not yet available, it still needs to be ported from `atom-fancy-react`
-
 A handy shortcut to quickly jump between a source file and it's corresponding test file, and back.
 
 Default key binding: `ctrl-alt-s`
