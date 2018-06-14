@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
-const initModulePaths = (root) => {
+const initModulePaths = (root: string) => {
     process.env.NODE_PATH = root + '/node_modules';
     require('module').Module._initPaths();
 };
