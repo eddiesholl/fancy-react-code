@@ -29,8 +29,16 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(generateDisposable);
     context.subscriptions.push(testsDisposable);
     context.subscriptions.push(switchDisposable);
+
+    initModulePaths(state.project.projectRoot);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
+
+const initModulePaths = (root) => {
+    process.env.NODE_PATH = root + '/node_modules';
+    require('module').Module._initPaths();
+};
+  
