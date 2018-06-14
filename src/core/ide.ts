@@ -23,7 +23,7 @@ export class CodeIDE implements IIDE {
   }
 
   getSetting(settingName: string) {
-    const extensionConfig = vscode.workspace.getConfiguration('fancy-react');
+    const extensionConfig = vscode.workspace.getConfiguration('fancyReact');
 
     return extensionConfig.get<string>(settingName);
   }

@@ -58,7 +58,43 @@
                 "key": "ctrl+alt+s",
                 "when": "editorTextFocus"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Fancy React configuration",
+            "properties": {
+                "fancyReact.packagePath": {
+                    "type": "string",
+                    "default": "client",
+                    "description": "Relative path from the actual package root."
+                },
+                "fancyReact.sourcePath": {
+                    "type": "string",
+                    "default": "src",
+                    "description": "Path from react root to source code"
+                },
+                "fancyReact.testPath": {
+                    "type": "string",
+                    "description": "testStructure=ParallelDirs -> dir name inside react root. testStructure=SubDir -> Name of the sub directory",
+                    "default": "test"
+                },
+                "fancyReact.testStructure": {
+                    "type": "string",
+                    "default": "ParallelDirs",
+                    "description": "How do you prefer to store tests?",
+                    "enum": [
+                        "ParallelDirs",
+                        "SameDir",
+                        "SubDir"
+                    ]
+                },
+                "fancyReact.testSuffix": {
+                    "type": "string",
+                    "description": "For example Foo.js -> Foo-test.js",
+                    "default": "-test"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run lint && npm run test && npm run compile",
