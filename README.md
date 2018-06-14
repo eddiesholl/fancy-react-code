@@ -28,6 +28,8 @@ A handy shortcut to quickly jump between a source file and it's corresponding te
 
 Default key binding: `ctrl-alt-s`
 
+![switch](https://github.com/eddiesholl/fancy-react-code/raw/master/doc/switch-files.gif "switch")
+
 # Package configuration
 
 The current workflows and generated code are built around a few basic assumptions about how the React project is laid out. The set of supported configurations and conventions will be expanding over time.
