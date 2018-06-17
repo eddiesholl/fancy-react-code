@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
-import { IState } from 'fancy-react-core';
-const glob = require('glob');
+import { IState, SourceFileCache } from 'fancy-react-core';
 const path = require('path');
 
-import { ReactTreeItem } from './react-tree-item';
+import { ReactTreeItem, ReactRootItem } from './react-tree-item';
 import { TreeItem } from 'vscode';
 
 export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem> {
-  rootItem: ReactTreeItem;
+  rootItem: ReactRootItem;
+  cache: SourceFileCache;
 
   constructor({ project }: IState) {
     // super();
@@ -16,32 +16,15 @@ export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem>
       project.srcInsideProject
     );
 
+    this.cache = new SourceFileCache();
+
     const srcGlob = srcFullPath + "/**/*.@(js|jsx|ts|tsx)";
 
-    this.rootItem = new ReactTreeItem(srcFullPath, 'Components');
-
-    // options is optional
-    glob(srcGlob, {}, (err: any, files: string[]) => {
-      if (!err) {
-        const itemsForFiles = files.map((filePath) => {
-          return new ReactTreeItem(
-            filePath,
-            path.basename(filePath),
-            this.rootItem
-          );
-        });
-        
-        this.rootItem.addChildren(itemsForFiles);
-      }
-      // files is an array of filenames.
-      // If the `nonull` option is set, and nothing
-      // was found, then files is ["**/*.js"]
-      // er is an error object or null.
-    });
+    this.rootItem = new ReactRootItem(srcFullPath, 'Components', this.cache.getFile.bind(this.cache), srcGlob);
   }
 
-  getChildren(element: ReactTreeItem): vscode.ProviderResult<ReactTreeItem[]> {
-    return element ? element.children : [this.rootItem];
+  getChildren(element: ReactTreeItem): Promise<ReactTreeItem[]> {
+    return element ? element.getChildren() : Promise.resolve([this.rootItem]);
   }
 
   getParent(element: ReactTreeItem): vscode.ProviderResult<ReactTreeItem> {
