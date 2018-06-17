@@ -13,6 +13,13 @@ export type ReactTreeItem = ReactRootItem | ReactComponentItem | ReactBasicItem;
 type FileLoader = (filePath: string) => Promise<ICachedSourceFile>;
 // type SourceFilter = (sourceFile: ICachedSourceFile) => ReactTreeItem | undefined;
 
+const sortTreeItems = (a: ReactTreeItem, b: ReactTreeItem) => {
+  const aLabel = a.label || '';
+  const bLabel = b.label || '';
+
+  return aLabel.localeCompare(bLabel);
+};
+
 export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
   parent: undefined;
   private childNodes: Promise<ReactTreeItem[]> | undefined;
@@ -39,7 +46,9 @@ export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
               return this.fileLoader(sourceFilePath).then(this.sourceFilter);
             });
             Promise.all(itemsForFiles).then((components) => {
-              resolve(components.filter(item => item !== undefined) as ReactTreeItem[]);
+              resolve(
+                (components.filter(item => item !== undefined) as ReactTreeItem[])
+                  .sort(sortTreeItems));
             });
           }
         });
