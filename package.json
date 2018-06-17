@@ -59,6 +59,14 @@
                 "when": "editorTextFocus"
             }
         ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "fancyReactTree",
+                    "name": "React Explorer"
+                }
+            ]
+        },
         "configuration": {
             "type": "object",
             "title": "Fancy React configuration",
@@ -110,6 +118,7 @@
     "dependencies": {
         "@types/ramda": "^0.25.32",
         "fancy-react-core": "^2.1.1",
+        "node-glob": "^1.2.0",
         "ramda": "^0.25.0"
     },
     "devDependencies": {

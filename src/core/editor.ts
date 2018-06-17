@@ -17,7 +17,7 @@ export default class CodeEditor implements IEditor {
 
   insertText(position: Position, text: string) {
     const codePosition = new vscode.Position(position.line, position.character);
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>((resolve) => {
       this.editorInstance.edit((edit: vscode.TextEditorEdit) => {
         edit.insert(codePosition, text + '\n');
       })
