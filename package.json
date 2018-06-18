@@ -63,7 +63,8 @@
             "explorer": [
                 {
                     "id": "fancyReactTree",
-                    "name": "React Explorer"
+                    "name": "React Explorer",
+                    "when": "config.fancyReact.treeViewEnabled"
                 }
             ]
         },
@@ -100,6 +101,11 @@
                     "type": "string",
                     "description": "For example Foo.js -> Foo-test.js",
                     "default": "-test"
+                },
+                "fancyReact.treeViewEnabled": {
+                    "type": "boolean",
+                    "description": "Is the component tree view enabled?",
+                    "default": false
                 }
             }
         }

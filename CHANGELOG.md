@@ -3,6 +3,9 @@ All notable changes to the "fancy-react-code" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.2.0
+- feature: new component tree view, currently disabled by default
+- feature: new setting `treeViewEnabled` to control new component tree view
 ## 2.1.2
 - fix: port initModulePaths to help with resolving eslint plugins
 ## 2.1.1

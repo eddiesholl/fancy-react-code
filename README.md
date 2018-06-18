@@ -30,6 +30,15 @@ Default key binding: `ctrl-alt-s`
 
 ![switch](https://github.com/eddiesholl/fancy-react-code/raw/master/doc/switch-files.gif "switch")
 
+# Views
+
+## Component tree view
+Get a preview of the components found in your project, with details like the properties found on each component. This feature is quite new and will be under active development. Right now, it only detects class based components.
+
+This is currently disabled by default, you will need to set `fancyReact.treeViewEnabled = true`.
+
+![tree](https://github.com/eddiesholl/fancy-react-code/raw/master/doc/tree-view.png "tree")
+
 # Package configuration
 
 The current workflows and generated code are built around a few basic assumptions about how the React project is laid out. The set of supported configurations and conventions will be expanding over time.
@@ -48,7 +57,8 @@ All configuration items can be set globally using the standard vscode settings f
   "packagePath": "client",
   "sourcePath": "src",
   "testPath": "test",
-  "testSuffix": "-test"
+  "testSuffix": "-test",
+  "treeViewEnabled": true
 }
 ```
 You can see an example config in the [package.json](https://github.com/eddiesholl/atom-fancy-react-test/blob/master/package.json#L43) file for `atom-fancy-react-test`.
