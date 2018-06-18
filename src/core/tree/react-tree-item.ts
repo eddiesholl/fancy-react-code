@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ICachedSourceFile } from 'fancy-react-core';
+import { ICachedSourceFile, IReactComponent } from 'fancy-react-core';
 const glob = require('glob');
 const path = require('path');
 
@@ -37,7 +37,7 @@ export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
 
   getChildren(): Promise<ReactTreeItem[]> {
     if (this.childNodes === undefined) {
-      return new Promise((resolve, reject) => {
+      this.childNodes = new Promise((resolve, reject) => {
         glob(this.fileGlob, {}, (err: any, files: string[]) => {
           if (err) {
             reject(err);
@@ -53,9 +53,9 @@ export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
           }
         });
       });
-    } else {
-      return this.childNodes;
     }
+
+    return this.childNodes;
   }
 
   sourceFilter(content: ICachedSourceFile): ReactTreeItem | undefined {
@@ -74,6 +74,7 @@ export class ReactComponentRootItem extends ReactRootItem {
         content.filePath,
         content.component.componentName,
         this,
+        content.component,
       );
     }
   }
@@ -92,37 +93,47 @@ export class ReactBasicRootItem extends ReactRootItem {
 }
 
 export class ReactComponentItem extends vscode.TreeItem implements IReactTreeItem {
-  children: ReactTreeItem[];
+  component: IReactComponent;
   parent: ReactTreeItem | undefined;
   filePath: string;
   iconPath: string;
+  private childNodes: Promise<ReactTreeItem[]> | undefined;
 
-  constructor(filePath: string, label: string, parent?: ReactTreeItem, children: ReactTreeItem[] = []) {
-    super(label, vscode.TreeItemCollapsibleState.None);
+  constructor(filePath: string, label: string, parent: ReactTreeItem, component: IReactComponent) {
+    super(label, vscode.TreeItemCollapsibleState.Collapsed);
 
     this.filePath = filePath;
-    this.children = children;
+    this.component = component;
     this.parent = parent;
 
-    this.iconPath = path.join(process.cwd(), 'doc', 'F-R.png');
+    // this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-green-64.png');
+    this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-grey-64.png');
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
-    return Promise.resolve([]);
+    if (this.childNodes === undefined) {
+      this.childNodes = Promise.resolve(
+        this.component.props.map(prop => {
+          return new ReactBasicItem(this.filePath, prop.name, this, 'down-right-64.png');
+        })
+      );
+    }
+
+    return this.childNodes;
   }
 }
 
 export class ReactBasicItem extends vscode.TreeItem implements IReactTreeItem {
-  children: ReactTreeItem[];
   parent: ReactTreeItem | undefined;
   filePath: string;
 
-  constructor(filePath: string, label: string, parent?: ReactTreeItem, children: ReactTreeItem[] = []) {
+  constructor(filePath: string, label: string, parent?: ReactTreeItem, iconName: string = 'circuit-48.png') {
     super(label, vscode.TreeItemCollapsibleState.None);
 
     this.filePath = filePath;
-    this.children = children;
     this.parent = parent;
+
+    this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', iconName);
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
