@@ -1,8 +1,8 @@
 # Change Log
 All notable changes to the "fancy-react-code" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
+## 2.2.1
+- fix: When trying to generate new component from snippet, only matches multiline components - issue #1
 ## 2.2.0
 - feature: new component tree view, currently disabled by default
 - feature: new setting `treeViewEnabled` to control new component tree view
