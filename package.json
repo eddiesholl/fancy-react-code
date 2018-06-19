@@ -119,11 +119,13 @@
         "release": "vsce publish",
         "release:npm": "np --no-yarn",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "echo 'TODO write some tests'"
+        "test": "echo 'TODO write some tests'",
+        "deps:link": "npm link fancy-react-core",
+        "deps:unlink": "npm unlink fancy-react-core && npm install fancy-react-core"
     },
     "dependencies": {
         "@types/ramda": "^0.25.32",
-        "fancy-react-core": "^2.1.2",
+        "fancy-react-core": "^2.2.0",
         "node-glob": "^1.2.0",
         "ramda": "^0.25.0"
     },
