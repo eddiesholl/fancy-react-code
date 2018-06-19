@@ -11,12 +11,16 @@ export default class CodeEditor implements IEditor {
     return this.editorInstance.document.getText();
   }
 
-  getCursorPosition() {
-    return this.editorInstance.selection.active;
+  getCursorPosition(): Position {
+    const ideCursor = this.editorInstance.selection.active;
+    return {
+      line: ideCursor.line + 1,
+      column: ideCursor.character + 1
+    };
   }
 
   insertText(position: Position, text: string) {
-    const codePosition = new vscode.Position(position.line, position.character);
+    const codePosition = new vscode.Position(position.line, position.column);
     return new Promise<boolean>((resolve) => {
       this.editorInstance.edit((edit: vscode.TextEditorEdit) => {
         edit.insert(codePosition, text + '\n');
