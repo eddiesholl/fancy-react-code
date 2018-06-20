@@ -17,9 +17,12 @@ export function activate(context: vscode.ExtensionContext) {
 
     const state = getState();
 
-    const reactTreeProvider = new ReactTreeProvider(state);
-
-    vscode.window.registerTreeDataProvider('fancyReactTree', reactTreeProvider);
+    try {
+        const reactTreeProvider = new ReactTreeProvider(state);
+        vscode.window.registerTreeDataProvider('fancyReactTree', reactTreeProvider);
+    } catch (e) {
+        console.error('Failed to create tree: ' + e)
+    }
 
     const generateDisposable = vscode.commands.registerCommand('extension.generate', () => {
         generate(state);

@@ -22,7 +22,6 @@ const sortTreeItems = (a: ReactTreeItem, b: ReactTreeItem) => {
 
 export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
   parent: undefined;
-  private childNodes: Promise<ReactTreeItem[]> | undefined;
   filePath: string;
   fileGlob: string;
   fileLoader: FileLoader;
@@ -36,26 +35,25 @@ export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
-    if (this.childNodes === undefined) {
-      this.childNodes = new Promise((resolve, reject) => {
-        glob(this.fileGlob, {}, (err: any, files: string[]) => {
-          if (err) {
-            reject(err);
-          } else {
-            const itemsForFiles = files.map((sourceFilePath) => {
-              return this.fileLoader(sourceFilePath).then(this.sourceFilter);
-            });
-            Promise.all(itemsForFiles).then((components) => {
-              resolve(
-                (components.filter(item => item !== undefined) as ReactTreeItem[])
-                  .sort(sortTreeItems));
-            });
-          }
-        });
+    return new Promise((resolve, reject) => {
+      glob(this.fileGlob, {}, (err: any, files: string[]) => {
+        if (err) {
+          reject(err);
+        } else {
+          const itemsForFiles = files.map((sourceFilePath) => {
+            return this.fileLoader(sourceFilePath).then(this.sourceFilter);
+          });
+          Promise.all(itemsForFiles).then((components) => {
+            resolve(
+              (components.filter(item => item !== undefined) as ReactTreeItem[])
+                .sort(sortTreeItems));
+          })
+          .catch((e) => {
+            console.log('Failed to parse files: ' + e);
+          });
+        }
       });
-    }
-
-    return this.childNodes;
+    });
   }
 
   sourceFilter(content: ICachedSourceFile): ReactTreeItem | undefined {
@@ -97,7 +95,6 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
   parent: ReactTreeItem | undefined;
   filePath: string;
   iconPath: string;
-  private childNodes: Promise<ReactTreeItem[]> | undefined;
 
   constructor(filePath: string, label: string, parent: ReactTreeItem, component: IReactComponent) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
@@ -111,15 +108,15 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
-    if (this.childNodes === undefined) {
-      this.childNodes = Promise.resolve(
-        this.component.props.map(prop => {
-          return new ReactBasicItem(this.filePath, prop.name, this, 'down-right-64.png');
-        })
-      );
-    }
-
-    return this.childNodes;
+    return Promise.resolve(
+      this.component.props.map(prop => {
+        return new ReactBasicItem(
+          this.filePath,
+          `${prop.name}: ${prop.type || '?'}`,
+          this,
+          'down-right-64.png');
+      })
+    );
   }
 }
 
