@@ -34,9 +34,14 @@ export function activate(context: vscode.ExtensionContext) {
         switchFiles(state);
     });
 
+    const openDisposable = vscode.commands.registerCommand('extension.openFile', (args) => {
+        state.ide.open(args);
+    });
+
     context.subscriptions.push(generateDisposable);
     context.subscriptions.push(testsDisposable);
     context.subscriptions.push(switchDisposable);
+    context.subscriptions.push(openDisposable);
 
     initModulePaths(state.project.projectRoot);
 }

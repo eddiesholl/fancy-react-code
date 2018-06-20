@@ -105,6 +105,13 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
 
     // this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-green-64.png');
     this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-grey-64.png');
+
+    this.command = {
+      arguments: [filePath],
+      command: 'extension.openFile',
+      title: 'openFile',
+      tooltip: 'clicked'
+    };
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
