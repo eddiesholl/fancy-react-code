@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the "fancy-react-code" extension will be documented in this file.
 
+## 2.2.2
+- improved component prop type detection
+- component props sorted in tree view
 ## 2.2.1
 - fix: When trying to generate new component from snippet, only matches multiline components - issue #1
 ## 2.2.0

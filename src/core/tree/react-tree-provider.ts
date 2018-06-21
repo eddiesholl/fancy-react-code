@@ -46,7 +46,7 @@ export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem>
       // console.log(JSON.stringify(e));
     });
 
-    this.fsw.onDidCreate(e => {
+    this.fsw.onDidCreate(() => {
       this.refresh();
     });
     this.fsw.onDidDelete(e => {
