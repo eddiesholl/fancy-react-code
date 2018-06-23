@@ -3,7 +3,7 @@
     "displayName": "Fancy React",
     "description": "Development tools and code generation for react development",
     "icon": "doc/F-R.png",
-    "version": "2.2.5",
+    "version": "2.2.6",
     "publisher": "fancy-react",
     "repository": "https://github.com/eddiesholl/fancy-react-code",
     "engines": {
