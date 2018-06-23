@@ -1,52 +1,60 @@
 import * as vscode from 'vscode';
-import { IState, SourceFileCache } from 'fancy-react-core';
+import { IState, SourceFileCache, Project } from 'fancy-react-core';
 const path = require('path');
-
-import { ReactTreeItem, ReactRootItem, ReactComponentRootItem, ReactBasicRootItem } from './react-tree-item';
+const glob = require('glob');
 import { TreeItem } from 'vscode';
+
+import { ReactTreeItem, ReactComponentRootItem, ReactBasicRootItem } from './react-tree-item';
+
+export const getTreeProvider = ({ project }: IState): Promise<ReactTreeProvider> => {
+  const fullPathToSrc = path.join(
+    project.projectRoot,
+    project.srcInsideProject
+  );
+  const srcGlob = fullPathToSrc + "/**/*.{js,jsx,ts,tsx}";
+
+  const fsw = vscode.workspace.createFileSystemWatcher(srcGlob);
+
+  const globPromise = new Promise<SourceFileCache>((resolve, reject) => {
+    const result = new SourceFileCache();
+
+    glob(srcGlob, {}, (err: any, files: string[]) => {
+      if (err) {
+        reject(result);
+      } else {
+        files.map(result.getFile.bind(result));
+        resolve(result);
+      }
+    });
+  });
+
+  return globPromise.then(cache => {
+    return new ReactTreeProvider(project, cache, fsw, fullPathToSrc);
+  });
+};
 
 export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<ReactTreeItem | undefined> = new vscode.EventEmitter<ReactTreeItem | undefined>();
 	readonly onDidChangeTreeData: vscode.Event<ReactTreeItem | undefined> = this._onDidChangeTreeData.event;
   
-  componentRoot: ReactRootItem;
-  nonComponentRoot: ReactRootItem;
+  project: Project;
   cache: SourceFileCache;
   fsw: vscode.FileSystemWatcher;
+  fullPathToSrc: string;
 
-  constructor({ project }: IState) {
-    // super();
-    const srcFullPath = path.join(
-      project.projectRoot,
-      project.srcInsideProject
-    );
+  constructor(project: Project, cache: SourceFileCache, fsw: vscode.FileSystemWatcher, fullPathToSrc: string) {
+    this.project = project;
+    this.fsw = fsw;
+    this.cache = cache;
+    this.fullPathToSrc = fullPathToSrc;
 
-    this.cache = new SourceFileCache();
-
-    const srcGlob = srcFullPath + "/**/*.{js,jsx,ts,tsx}";
-
-    this.componentRoot = new ReactComponentRootItem(
-      srcFullPath,
-      'Components',
-      this.cache.getFile.bind(this.cache),
-      srcGlob
-    );
-
-    this.nonComponentRoot = new ReactBasicRootItem(
-      srcFullPath,
-      'Non-Components',
-      this.cache.getFile.bind(this.cache),
-      srcGlob
-    );
-
-    this.fsw = vscode.workspace.createFileSystemWatcher(srcGlob);
     this.fsw.onDidChange(e => {
-      this.cache.clear(e.fsPath);
+      this.cache.refresh(e.fsPath);
       this.refresh();
-      // console.log(JSON.stringify(e));
     });
 
-    this.fsw.onDidCreate(() => {
+    this.fsw.onDidCreate((e) => {
+      this.cache.getFile(e.fsPath);
       this.refresh();
     });
     this.fsw.onDidDelete(e => {
@@ -60,7 +68,19 @@ export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem>
 	}
 
   getChildren(element: ReactTreeItem): Promise<ReactTreeItem[]> {
-    return element ? element.getChildren() : Promise.resolve([this.componentRoot, this.nonComponentRoot]);
+    return element ?
+      element.getChildren() :
+      Promise.resolve([
+          new ReactComponentRootItem(
+            this.fullPathToSrc,
+            'Components',
+            this.cache,
+          ),
+          new ReactBasicRootItem(
+            this.fullPathToSrc,
+            'Non-Components',
+            this.cache,
+          )]);
   }
 
   getParent(element: ReactTreeItem): vscode.ProviderResult<ReactTreeItem> {

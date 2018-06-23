@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 
 import { getState } from './state';
 import { generate, tests, switchFiles } from './actions';
-import { ReactTreeProvider } from './core/tree/react-tree-provider';
+import { getTreeProvider } from './core/tree/react-tree-provider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,12 +17,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     const state = getState();
 
-    try {
-        const reactTreeProvider = new ReactTreeProvider(state);
+    getTreeProvider(state).then(reactTreeProvider => {
         vscode.window.registerTreeDataProvider('fancyReactTree', reactTreeProvider);
-    } catch (e) {
-        console.error('Failed to create tree: ' + e)
-    }
+    }).catch(e => {
+        console.error('Failed to create tree: ' + e);
+    });
 
     const generateDisposable = vscode.commands.registerCommand('extension.generate', () => {
         generate(state);

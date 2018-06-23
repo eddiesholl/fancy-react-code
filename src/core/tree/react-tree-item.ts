@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { ICachedSourceFile, IReactComponent } from 'fancy-react-core';
-const glob = require('glob');
+import { ICachedSourceFile, IReactComponent, SourceFileCache } from 'fancy-react-core';
 const path = require('path');
 
 export interface IReactTreeItem extends vscode.TreeItem {
@@ -9,9 +8,6 @@ export interface IReactTreeItem extends vscode.TreeItem {
 }
 
 export type ReactTreeItem = ReactRootItem | ReactComponentItem | ReactBasicItem;
-
-type FileLoader = (filePath: string) => Promise<ICachedSourceFile>;
-// type SourceFilter = (sourceFile: ICachedSourceFile) => ReactTreeItem | undefined;
 
 const sortTreeItems = (a: ReactTreeItem, b: ReactTreeItem) => {
   const aLabel = a.label || '';
@@ -23,37 +19,27 @@ const sortTreeItems = (a: ReactTreeItem, b: ReactTreeItem) => {
 export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
   parent: undefined;
   filePath: string;
-  fileGlob: string;
-  fileLoader: FileLoader;
+  cache: SourceFileCache;
 
-  constructor(filePath: string, label: string, fileLoader: FileLoader, fileGlob: string) {
-    super(label, vscode.TreeItemCollapsibleState.Expanded);
+  constructor(filePath: string, label: string, cache: SourceFileCache) {
+    super(label, vscode.TreeItemCollapsibleState.Collapsed);
 
     this.filePath = filePath;
-    this.fileGlob = fileGlob;
-    this.fileLoader = fileLoader;
+    this.cache = cache;
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
-    return new Promise((resolve, reject) => {
-      glob(this.fileGlob, {}, (err: any, files: string[]) => {
-        if (err) {
-          reject(err);
-        } else {
-          const itemsForFiles = files.map((sourceFilePath) => {
-            return this.fileLoader(sourceFilePath).then(this.sourceFilter);
-          });
-          Promise.all(itemsForFiles).then((components) => {
-            resolve(
-              (components.filter(item => item !== undefined) as ReactTreeItem[])
-                .sort(sortTreeItems));
-          })
-          .catch((e) => {
-            console.log('Failed to parse files: ' + e);
-          });
-        }
-      });
-    });
+    return Promise.all(this.cache.cachedFiles())
+        .then(cachedFiles => {
+          return (cachedFiles
+            .map(this.sourceFilter)
+            .filter(item => item !== undefined) as ReactTreeItem[])
+            .sort(sortTreeItems);
+        })
+        .catch((e) => {
+          console.log('Failed to parse files: ' + e);
+          return [];
+        });
   }
 
   sourceFilter(content: ICachedSourceFile): ReactTreeItem | undefined {
