@@ -125,7 +125,7 @@
     },
     "dependencies": {
         "@types/ramda": "^0.25.32",
-        "fancy-react-core": "^2.2.1",
+        "fancy-react-core": "^2.2.2",
         "glob": "^7.1.2",
         "node-glob": "^1.2.0",
         "ramda": "^0.25.0"

@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the "fancy-react-code" extension will be documented in this file.
 
+## 2.2.3
+- peformance fix for tree view
+- open/create tests from tree view
 ## 2.2.2
 - improved component prop type detection
 - component props sorted in tree view
