@@ -115,7 +115,7 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
         this.component.props.map(prop => {
           return new ReactBasicItem(
             this.filePath,
-            `${prop.name}: ${prop.type || '?'} (${prop.optional ? 'optional' : 'required'})`,
+            `${prop.name}: ${prop.type || '?'}${prop.optional ? `? ${prop.default}` : ''}`,
             this,
             'down-right-64.png'
           );
