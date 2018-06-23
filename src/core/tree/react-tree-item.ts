@@ -8,7 +8,7 @@ export interface IReactTreeItem extends vscode.TreeItem {
   parent?: IReactTreeItem;
 }
 
-export type ReactTreeItem = ReactRootItem | ReactComponentItem | ReactBasicItem;
+export type ReactTreeItem = ReactRootItem | ReactComponentItem | ReactBasicItem | ReactComponentTestsItem;
 
 const sortTreeItems = (a: ReactTreeItem, b: ReactTreeItem) => {
   const aLabel = a.label || '';
@@ -21,6 +21,7 @@ export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
   parent: undefined;
   filePath: string;
   cache: SourceFileCache;
+  project: Project;
 
   constructor(filePath: string, label: string, cache: SourceFileCache, project: Project) {
     super(label, vscode.TreeItemCollapsibleState.Expanded);
@@ -85,7 +86,7 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
   filePath: string;
   iconPath: string;
   project: Project;
-  testsChild: ReactComponentTestsItem;
+  prePropsChildren: ReactTreeItem[];
 
   constructor(filePath: string, label: string, parent: ReactTreeItem, component: IReactComponent, project: Project) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
@@ -105,20 +106,21 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
       tooltip: 'clicked'
     };
 
-    this.testsChild = new ReactComponentTestsItem(this, this.filePath,  this.project.sourceFileToTestFile(this.filePath));
+    this.prePropsChildren = [new ReactComponentTestsItem(this, this.filePath,  this.project.sourceFileToTestFile(this.filePath))];
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
-    return Promise.resolve(
-      [this.testsChild].concat(
+    return Promise.resolve<ReactTreeItem[]>(
+      this.prePropsChildren.concat(
         this.component.props.map(prop => {
           return new ReactBasicItem(
             this.filePath,
             `${prop.name}: ${prop.type || '?'} (${prop.optional ? 'optional' : 'required'})`,
             this,
-            'down-right-64.png');
-          });
-    )
+            'down-right-64.png'
+          );
+        })
+      ));
   }
 }
 
@@ -164,5 +166,9 @@ export class ReactComponentTestsItem extends vscode.TreeItem implements IReactTr
         tooltip: 'Create tests'
       };
     }
+  }
+
+  getChildren(): Promise<ReactTreeItem[]> {
+    return Promise.resolve([]);
   }
 }
