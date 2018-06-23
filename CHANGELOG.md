@@ -1,6 +1,8 @@
 # Change Log
 All notable changes to the "fancy-react-code" extension will be documented in this file.
 
+## 2.2.5
+- fix test generation for mapStateToProps
 ## 2.2.4
 - prevent generation of test suite for literal exports
 ## 2.2.3
