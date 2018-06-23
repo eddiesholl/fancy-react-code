@@ -26,8 +26,8 @@ export function activate(context: vscode.ExtensionContext) {
     const generateDisposable = vscode.commands.registerCommand('extension.generate', () => {
         generate(state);
     });
-    const testsDisposable = vscode.commands.registerCommand('extension.tests', () => {
-        tests(state);
+    const testsDisposable = vscode.commands.registerCommand('extension.tests', (sourceFilePath) => {
+        tests(state, sourceFilePath);
     });
     const switchDisposable = vscode.commands.registerCommand('extension.switchFiles', () => {
         switchFiles(state);

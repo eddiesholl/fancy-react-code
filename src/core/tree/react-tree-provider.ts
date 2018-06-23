@@ -6,14 +6,16 @@ import { TreeItem } from 'vscode';
 
 import { ReactTreeItem, ReactComponentRootItem, ReactBasicRootItem } from './react-tree-item';
 
+const extensionGlob = "/**/*.{js,jsx,ts,tsx}";
+
 export const getTreeProvider = ({ project }: IState): Promise<ReactTreeProvider> => {
   const fullPathToSrc = path.join(
     project.projectRoot,
     project.srcInsideProject
   );
-  const srcGlob = fullPathToSrc + "/**/*.{js,jsx,ts,tsx}";
+  const srcGlob = fullPathToSrc + extensionGlob;
 
-  const fsw = vscode.workspace.createFileSystemWatcher(srcGlob);
+  const fsw = vscode.workspace.createFileSystemWatcher(project.projectRoot + extensionGlob);
 
   const globPromise = new Promise<SourceFileCache>((resolve, reject) => {
     const result = new SourceFileCache();
@@ -75,11 +77,13 @@ export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem>
             this.fullPathToSrc,
             'Components',
             this.cache,
+            this.project,
           ),
           new ReactBasicRootItem(
             this.fullPathToSrc,
             'Non-Components',
             this.cache,
+            this.project,
           )]);
   }
 

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { ICachedSourceFile, IReactComponent, SourceFileCache } from 'fancy-react-core';
+import { ICachedSourceFile, IReactComponent, SourceFileCache, Project } from 'fancy-react-core';
+const fs = require('fs');
 const path = require('path');
 
 export interface IReactTreeItem extends vscode.TreeItem {
@@ -21,18 +22,19 @@ export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
   filePath: string;
   cache: SourceFileCache;
 
-  constructor(filePath: string, label: string, cache: SourceFileCache) {
-    super(label, vscode.TreeItemCollapsibleState.Collapsed);
+  constructor(filePath: string, label: string, cache: SourceFileCache, project: Project) {
+    super(label, vscode.TreeItemCollapsibleState.Expanded);
 
     this.filePath = filePath;
     this.cache = cache;
+    this.project = project;
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
     return Promise.all(this.cache.cachedFiles())
         .then(cachedFiles => {
           return (cachedFiles
-            .map(this.sourceFilter)
+            .map(this.sourceFilter.bind(this))
             .filter(item => item !== undefined) as ReactTreeItem[])
             .sort(sortTreeItems);
         })
@@ -59,6 +61,7 @@ export class ReactComponentRootItem extends ReactRootItem {
         content.component.componentName,
         this,
         content.component,
+        this.project,
       );
     }
   }
@@ -81,13 +84,16 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
   parent: ReactTreeItem | undefined;
   filePath: string;
   iconPath: string;
+  project: Project;
+  testsChild: ReactComponentTestsItem;
 
-  constructor(filePath: string, label: string, parent: ReactTreeItem, component: IReactComponent) {
+  constructor(filePath: string, label: string, parent: ReactTreeItem, component: IReactComponent, project: Project) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
 
     this.filePath = filePath;
     this.component = component;
     this.parent = parent;
+    this.project = project;
 
     // this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-green-64.png');
     this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-grey-64.png');
@@ -98,18 +104,21 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
       title: 'openFile',
       tooltip: 'clicked'
     };
+
+    this.testsChild = new ReactComponentTestsItem(this, this.filePath,  this.project.sourceFileToTestFile(this.filePath));
   }
 
   getChildren(): Promise<ReactTreeItem[]> {
     return Promise.resolve(
-      this.component.props.map(prop => {
-        return new ReactBasicItem(
-          this.filePath,
-          `${prop.name}: ${prop.type || '?'} (${prop.optional ? 'optional' : 'required'})`,
-          this,
-          'down-right-64.png');
-      })
-    );
+      [this.testsChild].concat(
+        this.component.props.map(prop => {
+          return new ReactBasicItem(
+            this.filePath,
+            `${prop.name}: ${prop.type || '?'} (${prop.optional ? 'optional' : 'required'})`,
+            this,
+            'down-right-64.png');
+          });
+    )
   }
 }
 
@@ -128,5 +137,32 @@ export class ReactBasicItem extends vscode.TreeItem implements IReactTreeItem {
 
   getChildren(): Promise<ReactTreeItem[]> {
     return Promise.resolve([]);
+  }
+}
+
+export class ReactComponentTestsItem extends vscode.TreeItem implements IReactTreeItem {
+  parent: ReactTreeItem;
+
+  constructor(parent: ReactTreeItem, sourceFilePath: string, testFilePath: string) {
+    const testsExist = fs.existsSync(testFilePath);
+    
+    super(testsExist ? 'Open tests' : 'Create tests', vscode.TreeItemCollapsibleState.None);
+    this.parent = parent;
+
+    if (testsExist) {
+      this.command = {
+        arguments: [testFilePath],
+        command: 'extension.openFile',
+        title: 'Open test file',
+        tooltip: 'Open test file'
+      };
+    } else {
+      this.command = {
+        arguments: [sourceFilePath],
+        command: 'extension.tests',
+        title: 'Create tests',
+        tooltip: 'Create tests'
+      };
+    }
   }
 }
