@@ -33,7 +33,7 @@ Default key binding: `ctrl-alt-s`
 # Views
 
 ## Component tree view
-Get a preview of the components found in your project, with details like the properties found on each component. This feature is quite new and will be under active development. Right now, it only detects class based components.
+Get a preview of the components found in your project, with details like the properties found on each component. It can also discover the `redux` connected state of a component, and where each prop comes from. This feature is quite new and will be under active development. Right now, it only detects class based components.
 
 This is currently disabled by default, you will need to set `fancyReact.treeViewEnabled = true`.
 
