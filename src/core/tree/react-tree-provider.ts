@@ -4,7 +4,7 @@ const path = require('path');
 const glob = require('glob');
 import { TreeItem } from 'vscode';
 
-import { ReactTreeItem, ReactComponentRootItem, ReactBasicRootItem } from './react-tree-item';
+import { ReactTreeItem, ReactComponentRootItem } from './react-tree-item';
 
 const extensionGlob = "/**/*.{js,jsx,ts,tsx}";
 
@@ -79,12 +79,13 @@ export class ReactTreeProvider implements vscode.TreeDataProvider<ReactTreeItem>
             this.cache,
             this.project,
           ),
-          new ReactBasicRootItem(
-            this.fullPathToSrc,
-            'Non-Components',
-            this.cache,
-            this.project,
-          )]);
+          // new ReactBasicRootItem(
+          //   this.fullPathToSrc,
+          //   'Non-Components',
+          //   this.cache,
+          //   this.project,
+          // )
+        ]);
   }
 
   getParent(element: ReactTreeItem): vscode.ProviderResult<ReactTreeItem> {

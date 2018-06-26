@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ICachedSourceFile, IReactComponent, SourceFileCache, Project } from 'fancy-react-core';
+import { ICachedSourceFile, IReactComponent, SourceFileCache, Project, PropStyle, IReactProperty } from 'fancy-react-core';
 const fs = require('fs');
 const path = require('path');
 
@@ -15,6 +15,27 @@ const sortTreeItems = (a: ReactTreeItem, b: ReactTreeItem) => {
   const bLabel = b.label || '';
 
   return aLabel.localeCompare(bLabel);
+};
+
+const scoreProp = (prop: IReactProperty): number => {
+  if (prop.style === PropStyle.Input) {
+    return 5;
+  } else if (prop.style === PropStyle.ReduxFunc) {
+    return 3;
+  } else {
+    return 1;
+  }
+};
+
+const sortProps = (a: IReactProperty, b: IReactProperty): number => {
+  const scoreA = scoreProp(a);
+  const scoreB = scoreProp(b);
+
+  if (scoreA === scoreB) {
+    return a.name.localeCompare(b.name);
+  } else {
+    return scoreB - scoreA;
+  }
 };
 
 export class ReactRootItem extends vscode.TreeItem implements IReactTreeItem {
@@ -80,6 +101,16 @@ export class ReactBasicRootItem extends ReactRootItem {
   }
 }
 
+const propIcon = (style: PropStyle): string => {
+  if (style === PropStyle.ReduxFunc) {
+    return 'f-48.png';
+  } else if (style === PropStyle.State) {
+    return 'up-right-64.png';
+  } else {
+    return 'down-right-64.png';
+  }
+};
+
 export class ReactComponentItem extends vscode.TreeItem implements IReactTreeItem {
   component: IReactComponent;
   parent: ReactTreeItem | undefined;
@@ -97,7 +128,9 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
     this.project = project;
 
     // this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-green-64.png');
-    this.iconPath = path.join(__dirname, '..', '..', '..', 'assets', 'resistor-grey-64.png');
+    this.iconPath = path.join(
+      __dirname, '..', '..', '..', 'assets',
+      component.redux.connected ? 'resistor-green-64.png' : 'resistor-grey-64.png');
 
     this.command = {
       arguments: [filePath],
@@ -112,14 +145,16 @@ export class ReactComponentItem extends vscode.TreeItem implements IReactTreeIte
   getChildren(): Promise<ReactTreeItem[]> {
     return Promise.resolve<ReactTreeItem[]>(
       this.prePropsChildren.concat(
-        this.component.props.map(prop => {
-          return new ReactBasicItem(
-            this.filePath,
-            `${prop.name}: ${prop.type || '?'}${prop.optional ? `? ${prop.default}` : ''}`,
-            this,
-            'down-right-64.png'
-          );
-        })
+        this.component.props
+          .sort(sortProps)
+          .map(prop => {
+            return new ReactBasicItem(
+              this.filePath,
+              `${prop.name}: ${prop.type || '?'}${prop.optional ? `? ${prop.default}` : ''}`,
+              this,
+              propIcon(prop.style)
+            );
+          })
       ));
   }
 }

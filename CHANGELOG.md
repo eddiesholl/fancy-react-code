@@ -1,6 +1,8 @@
 # Change Log
 All notable changes to the "fancy-react-code" extension will be documented in this file.
 
+## 2.2.7
+- extract redux details and apply to component props
 ## 2.2.6
 - extract default values for props
 ## 2.2.5
